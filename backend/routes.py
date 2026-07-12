@@ -68,3 +68,40 @@ def register_routes(app):
         finally:
             # Ensures the connection closes even if an error occurs
             conn.close()
+
+    @app.route("/api/student/login", methods=["POST"])
+    def student_login():
+
+        data = request.get_json()
+
+        roll_no = data.get("roll_no")
+        password = data.get("password")
+
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        SELECT * FROM students
+        WHERE roll_no=? AND password=?
+        """, (roll_no, password))
+
+        student = cursor.fetchone()
+
+        conn.close()
+
+        if student:
+
+            return jsonify({
+                "success": True,
+                "student": {
+                    "id": student["id"],
+                    "name": student["name"],
+                    "roll_no": student["roll_no"],
+                    "department": student["department"]
+                }
+            }), 200
+
+        return jsonify({
+            "success": False,
+            "message": "Invalid Roll Number or Password"
+        }), 401        
