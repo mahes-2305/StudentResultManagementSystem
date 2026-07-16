@@ -1,12 +1,20 @@
-from flask import request, jsonify
-from database import get_connection
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from database import create_tables, get_connection
+
+app = Flask(__name__)
+
+CORS(app)
+
+create_tables()
+
 
 def register_routes(app):
 
     @app.route("/api/admin/login", methods=["POST"])
     def admin_login():
         data = request.get_json()
-        
+
         username = data.get("username")
         password = data.get("password")
 
@@ -18,7 +26,7 @@ def register_routes(app):
             "SELECT * FROM admin WHERE username=? AND password=?",
             (username, password)
         )
-        
+
         admin = cursor.fetchone()
         conn.close()
 
@@ -37,7 +45,7 @@ def register_routes(app):
     @app.route("/api/student", methods=["POST"])
     def add_student():
         data = request.get_json()
-        
+
         name = data.get("name")
         roll_no = data.get("roll_no")
         department = data.get("department")
@@ -51,7 +59,7 @@ def register_routes(app):
                 INSERT INTO students(name, roll_no, department, password)
                 VALUES(?, ?, ?, ?)
             """, (name, roll_no, department, password))
-            
+
             conn.commit()
 
             return jsonify({
@@ -104,8 +112,8 @@ def register_routes(app):
         return jsonify({
             "success": False,
             "message": "Invalid Roll Number or Password"
-        }), 401        
-    
+        }), 401
+
     @app.route("/api/marks", methods=["POST"])
     def add_marks():
 
@@ -144,7 +152,7 @@ def register_routes(app):
             "success": True,
             "message": "Marks Added Successfully"
         }), 201
-    
+
     @app.route("/api/marks", methods=["PUT"])
     def update_marks():
 
@@ -192,7 +200,7 @@ def register_routes(app):
             "success": True,
             "message": "Marks Updated Successfully"
         }), 200
-    
+
     @app.route("/api/result/<roll_no>", methods=["GET"])
     def view_result(roll_no):
 
@@ -264,3 +272,9 @@ def register_routes(app):
             "percentage": percentage,
             "grade": grade
         })
+
+register_routes(app)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

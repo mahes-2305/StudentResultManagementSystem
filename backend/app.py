@@ -1,8 +1,12 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
+
 from database import create_tables
 from routes import register_routes
 
 app = Flask(__name__)
+
+CORS(app)
 
 create_tables()
 
