@@ -1,8 +1,21 @@
-__pycache__/
+# Python
+backend/venv/
+backend/__pycache__/
 *.pyc
-.env
-venv/
-node_modules/
-terraform/.terraform/
-terraform.tfstate
-terraform.tfstate.backup
+
+# Database
+backend/student.db
+
+# Docker
+*.log
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
