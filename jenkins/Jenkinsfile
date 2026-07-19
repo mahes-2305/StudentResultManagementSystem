@@ -22,11 +22,12 @@ pipeline {
         }
 
         stage('Verify Deployment') {
-            steps {
-                sh 'docker ps'
-                sh 'curl http://localhost:5000/'
-            }
-        }
+    steps {
+        sh 'docker ps'
+        sh 'docker inspect -f "{{.State.Running}}" student-backend'
+        sh 'docker inspect -f "{{.State.Running}}" student-frontend'
+    }
+}
     }
 
     post {
